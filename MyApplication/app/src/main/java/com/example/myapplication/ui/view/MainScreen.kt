@@ -5,17 +5,23 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.tooling.preview.Preview
-
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.myapplication.ui.model.MainScreenModel
+import androidx.lifecycle.observeAsState
+import com.example.myapplication.viewmodel.MainScreenViewModel
 
 @Preview(showBackground = true)
 @Composable
-fun MainScreen() {
+fun MainScreen(viewModel: MainScreenViewModel = viewModel()) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -33,9 +39,13 @@ fun MainScreen() {
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            FortbewegungsListe(onVehicleSelected = { /* TODO */ })
-            FortbewegungsDauer(onDurationChanged = { /* TODO */ })
-            CO2Berechnung()
+            FortbewegungsListe(onVehicleSelected = viewModel::onVehicleSelected)
+            FortbewegungsDauer(onDurationChanged = viewModel::onDurationChanged)
+            CO2Berechnung(
+                selectedFortbewegungsmittel = viewModel.selectedFortbewegungsmittel,
+                duration = viewModel.duration,
+                onCalculateCO2 = viewModel::calculateCO2Emission
+            )
             WochentagsUebersicht()
             WochenUebersicht()
         }
@@ -45,7 +55,7 @@ fun MainScreen() {
 @Composable
 fun FortbewegungsListe(onVehicleSelected: (String) -> Unit) {
     val vehicles = listOf("Auto", "Fahrrad", "Flugzeug")
-    val (selectedVehicle, setSelectedVehicle) = remember { mutableStateOf("Auto") }
+    val selectedVehicle by remember { mutableStateOf("Auto") }
     Column(Modifier.padding(16.dp)) {
         Text(text = "Fortbewegungsmittel", style = MaterialTheme.typography.h6)
         for (vehicle in vehicles) {
@@ -57,7 +67,6 @@ fun FortbewegungsListe(onVehicleSelected: (String) -> Unit) {
                 RadioButton(
                     selected = (vehicle == selectedVehicle),
                     onClick = {
-                        setSelectedVehicle(vehicle)
                         onVehicleSelected(vehicle)
                     }
                 )
@@ -73,14 +82,13 @@ fun FortbewegungsListe(onVehicleSelected: (String) -> Unit) {
 
 @Composable
 fun FortbewegungsDauer(onDurationChanged: (Int) -> Unit) {
-    val duration = remember { mutableStateOf(0) }
+    val duration by remember { mutableStateOf(0) }
     Column(Modifier.padding(16.dp)) {
         Text(text = "Fortbewegungsdauer (in Minuten)", style = MaterialTheme.typography.h6)
         TextField(
-            value = duration.value.toString(),
+            value = duration.toString(),
             onValueChange = {
                 val newValue = it.toIntOrNull() ?: 0
-                duration.value = newValue
                 onDurationChanged(newValue)
             },
             modifier = Modifier.padding(top = 8.dp)
@@ -89,28 +97,28 @@ fun FortbewegungsDauer(onDurationChanged: (Int) -> Unit) {
 }
 
 @Composable
-fun CO2Berechnung() {
-    val (co2, setCo2) = remember { mutableStateOf(0f) }
+fun CO2Berechnung(
+    selectedFortbewegungsmittel: String,
+    duration: Int,
+    onCalculateCO2: () -> Unit
+) {
+    val co2 by remember { mutableStateOf(0f) }
     val fortbewegungsmittelCo2 = mapOf("Auto" to 0.3f, "Fahrrad" to 0.0f, "Flugzeug" to 2.0f)
-    val selectedFortbewegungsmittel = remember { mutableStateOf("Auto") }
-    val dauer = remember { mutableStateOf(0) }
+    val dauer by remember { mutableStateOf(0) }
 
     Column(Modifier.padding(16.dp)) {
         Text(text = "CO2-Berechnung", style = MaterialTheme.typography.h6)
 
         Row(Modifier.padding(top = 8.dp)) {
-            Text(text = "Gewähltes Fortbewegungsmittel: ${selectedFortbewegungsmittel.value}")
+            Text(text = "Gewähltes Fortbewegungsmittel: $selectedFortbewegungsmittel")
         }
 
         Row(Modifier.padding(top = 8.dp)) {
-            Text(text = "Dauer der Fortbewegung: ${dauer.value} Minuten")
+            Text(text = "Dauer der Fortbewegung: $duration Minuten")
         }
 
         Button(
-            onClick = {
-                val co2Emission = fortbewegungsmittelCo2[selectedFortbewegungsmittel.value] ?: 0f
-                setCo2(co2Emission * dauer.value)
-            },
+            onClick = onCalculateCO2,
             modifier = Modifier.padding(top = 8.dp)
         ) {
             Text(text = "Berechnen")
