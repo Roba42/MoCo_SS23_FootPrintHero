@@ -6,17 +6,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.myapplication.ui.model.MainScreenModel
-import androidx.lifecycle.observeAsState
 import com.example.myapplication.viewmodel.MainScreenViewModel
 
 @Preview(showBackground = true)
@@ -72,7 +68,7 @@ fun FortbewegungsListe(onVehicleSelected: (String) -> Unit) {
                 )
                 Text(
                     text = vehicle,
-                    style = MaterialTheme.typography.body1.merge(),
+                    style = MaterialTheme.typography.body1,
                     modifier = Modifier.padding(start = 16.dp)
                 )
             }
@@ -152,7 +148,7 @@ fun WochentagsUebersicht() {
                 )
                 Text(
                     text = day,
-                    style = MaterialTheme.typography.body1.merge(),
+                    style = MaterialTheme.typography.body1,
                     modifier = Modifier.padding(start = 16.dp)
                 )
             }
@@ -181,7 +177,7 @@ fun WochenUebersicht() {
                 )
                 Text(
                     text = "KW $week",
-                    style = MaterialTheme.typography.body1.merge(),
+                    style = MaterialTheme.typography.body1,
                     modifier = Modifier.padding(start = 16.dp)
                 )
             }

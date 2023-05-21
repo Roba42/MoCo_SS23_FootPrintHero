@@ -3,7 +3,7 @@ package com.example.myapplication.ui.model
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 
-class MainScreenModel : ViewModel() {
+class `MainScreenModel` : ViewModel() {
     val selectedVehicle = mutableStateOf("Auto")
     val duration = mutableStateOf(0)
     val co2 = mutableStateOf(0f)

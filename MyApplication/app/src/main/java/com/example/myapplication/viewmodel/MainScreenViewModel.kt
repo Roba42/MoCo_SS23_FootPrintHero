@@ -15,6 +15,6 @@ class MainScreenViewModel : ViewModel() {
     }
 
     fun calculateCO2Emission() {
-        // Implementieren Sie hier Ihre CO2-Berechnungslogik
+        // Implement your CO2 calculation logic here
     }
 }
