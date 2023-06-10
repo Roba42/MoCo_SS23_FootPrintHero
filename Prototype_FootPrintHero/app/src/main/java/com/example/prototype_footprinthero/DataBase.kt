@@ -6,57 +6,55 @@ class FirestoreDatabase {
 
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
-    fun writeData(data: Any) {
-        db.collection("yourCollection")
-            .document("yourDocumentId")
-            .set(data)
+    fun writeCO2Data(co2Data: List<BarData>, collectionName: String, documentId: String, callback: (Boolean) -> Unit) {
+        val co2DataMap = co2Data.associateBy({ it.dayOfWeek }, { it.value })
+        db.collection(collectionName)
+            .document(documentId)
+            .set(co2DataMap)
             .addOnSuccessListener {
-                // Erfolgreich geschrieben
+                callback(true) // Erfolgreich geschrieben
             }
             .addOnFailureListener { e ->
-                // Fehler beim Schreiben
+                callback(false) // Fehler beim Schreiben
             }
     }
 
-    fun readData(documentId: String, callback: (Any?) -> Unit) {
-        db.collection("yourCollection")
+    fun readCO2Data(collectionName: String, documentId: String, callback: (List<BarData>?) -> Unit) {
+        db.collection(collectionName)
             .document(documentId)
             .get()
             .addOnSuccessListener { documentSnapshot ->
-                val data = documentSnapshot.toObject(Any::class.java)
-                callback(data)
+                val co2DataMap = documentSnapshot.data
+                val co2DataList = co2DataMap?.entries?.map { BarData(it.key, it.value as Float) }
+                callback(co2DataList)
             }
             .addOnFailureListener { e ->
-                // Fehler beim Lesen
-                callback(null)
+                callback(null) // Fehler beim Lesen
             }
     }
 
-    fun updateData(documentId: String, newData: Map<String, Any>, callback: (Boolean) -> Unit) {
-        db.collection("yourCollection")
+    fun updateCO2Data(co2Data: List<BarData>, collectionName: String, documentId: String, callback: (Boolean) -> Unit) {
+        val co2DataMap = co2Data.associateBy({ it.dayOfWeek }, { it.value })
+        db.collection(collectionName)
             .document(documentId)
-            .update(newData)
+            .update(co2DataMap)
             .addOnSuccessListener {
-                // Erfolgreich aktualisiert
-                callback(true)
+                callback(true) // Erfolgreich aktualisiert
             }
             .addOnFailureListener { e ->
-                // Fehler beim Aktualisieren
-                callback(false)
+                callback(false) // Fehler beim Aktualisieren
             }
     }
 
-    fun deleteData(documentId: String, callback: (Boolean) -> Unit) {
-        db.collection("yourCollection")
+    fun deleteCO2Data(collectionName: String, documentId: String, callback: (Boolean) -> Unit) {
+        db.collection(collectionName)
             .document(documentId)
             .delete()
             .addOnSuccessListener {
-                // Erfolgreich gelöscht
-                callback(true)
+                callback(true) // Erfolgreich gelöscht
             }
             .addOnFailureListener { e ->
-                // Fehler beim Löschen
-                callback(false)
+                callback(false) // Fehler beim Löschen
             }
     }
 }
