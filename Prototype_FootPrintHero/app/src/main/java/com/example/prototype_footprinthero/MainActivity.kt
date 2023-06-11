@@ -288,7 +288,7 @@ fun WeeklyOverview() {
 
 @Composable
 fun WeekdayOverview() {
-    val days = listOf("Mo", "Di", "Mi", "Do", "Fr", "Sa", "So")
+   val days = listOf("Mo", "Di", "Mi", "Do", "Fr", "Sa", "So")
 
     val co2Data = remember {
         mutableStateListOf(
@@ -344,6 +344,41 @@ fun WeekdayOverview() {
 }
 
 data class BarData(val dayOfWeek: String, val value: Float)
+
+//ToDo: Daten aus Firestore lesen
+/*
+@Composable
+fun WeekdayOverview() {
+    val days = listOf("Mo", "Di", "Mi", "Do", "Fr", "Sa", "So")
+
+    val co2Data = remember {
+        mutableStateListOf<BarData>().apply {
+            for (day in days) {
+                val randomValue =
+                    Random.nextFloat() * 100 // Erzeuge eine zufällige Gleitkommazahl zwischen 0 und 100
+                add(BarData(day, randomValue))
+            }
+        }
+    }
+
+    val firestoreDatabase = FirestoreDatabase()
+
+    val collectionName = "FootprintHero"
+    val documentId = "userTest"
+
+    LaunchedEffect(Unit) {
+        firestoreDatabase.writeCO2Data(co2Data, collectionName, documentId) { success, errorMessage ->
+            if (success) {
+                println("CO2-Daten erfolgreich geschrieben")
+                // Weitere Aktionen bei erfolgreichem Schreibvorgang
+            } else {
+                println("Fehler beim Schreiben der CO2-Daten: $errorMessage")
+                // Aktionen bei Fehler beim Schreibvorgang
+            }
+        }
+    }
+}
+ */
 
 
 

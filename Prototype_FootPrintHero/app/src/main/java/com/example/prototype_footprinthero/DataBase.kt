@@ -1,4 +1,5 @@
-package com.example.prototype_footprinthero
+package com.example.test
+
 
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -10,7 +11,7 @@ class FirestoreDatabase {
         co2Data: List<BarData>,
         collectionName: String,
         documentId: String,
-        callback: (Boolean) -> Unit
+        callback: (Boolean, String?) -> Unit
     ) {
         val data = co2Data.map { it.copy() } // Kopie der Liste erstellen, um unerwartete Änderungen zu vermeiden
 
@@ -25,12 +26,16 @@ class FirestoreDatabase {
             .document(documentId)
             .set(mapOf("co2Data" to firestoreData))
             .addOnSuccessListener {
-                callback(true) // Erfolgreich geschrieben
+                callback(true, null) // Erfolgreich geschrieben, kein Fehler
             }
             .addOnFailureListener { e ->
-                callback(false) // Fehler beim Schreiben
+                val errorMessage = e.message ?: "Unbekannter Fehler"
+                callback(false, errorMessage) // Fehler beim Schreiben mit Fehlermeldung
             }
     }
+
+
+
 
     fun readCO2Data(
         collectionName: String,
