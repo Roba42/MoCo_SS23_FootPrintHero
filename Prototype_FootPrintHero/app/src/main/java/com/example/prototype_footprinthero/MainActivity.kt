@@ -386,3 +386,70 @@ data class BarData(val dayOfWeek: String, val value: Float)
 //ToDo - Navigations bar - aufteilen in 3"Screens"
 //ToDo - Login, Main, Auswertung
 //ToDo - Datenstruktur überarbeiten,
+
+/*
+@Composable
+fun writeCO2Data(firestoreDatabase: FirestoreDatabase, co2Data: List<BarData>) {
+    val collectionName = "FootprintHero"
+    val documentId = "userTest"
+
+    LaunchedEffect(Unit) {
+        firestoreDatabase.writeCO2Data(co2Data, collectionName, documentId) { success, errorMessage ->
+            if (success) {
+                println("CO2-Daten erfolgreich geschrieben: ${co2Data.joinToString()}")
+                readCO2Data(firestoreDatabase, collectionName, documentId)
+            } else {
+                println("Fehler beim Schreiben der CO2-Daten: $errorMessage")
+            }
+        }
+    }
+}
+
+
+
+fun readCO2Data(firestoreDatabase: FirestoreDatabase, collectionName: String, documentId: String) {
+    // Daten lesen
+    firestoreDatabase.readCO2Data(collectionName, documentId) { co2DataList, readErrorMessage ->
+        if (co2DataList != null) {
+            println("CO2-Daten erfolgreich gelesen: ${co2DataList.joinToString()}")
+            // Weitere Aktionen bei erfolgreichem Lesen
+            updateCO2Data(firestoreDatabase, collectionName, documentId, co2DataList)
+        } else {
+            println("Fehler beim Lesen der CO2-Daten: $readErrorMessage")
+        }
+    }
+}
+
+fun updateCO2Data(firestoreDatabase: FirestoreDatabase, collectionName: String, documentId: String,co2Data: List<BarData>) {
+    val updatedCo2Data = co2Data.map { barData ->
+        if (barData.dayOfWeek == "Di" || barData.dayOfWeek == "Fr") {
+            BarData(barData.dayOfWeek, 15f)
+        } else {
+            barData
+        }
+    }
+        // Daten aktualisieren
+        firestoreDatabase.updateCO2Data(updatedCo2Data, collectionName, documentId) { updateSuccess, updateErrorMessage ->
+            if (updateSuccess) {
+                println("CO2-Daten erfolgreich aktualisiert")
+                // Weitere Aktionen bei erfolgreichem Aktualisieren
+                deleteCO2Data(firestoreDatabase, collectionName, documentId)
+            } else {
+                println("Fehler beim Aktualisieren der CO2-Daten: $updateErrorMessage")
+            }
+        }
+}
+
+fun deleteCO2Data(firestoreDatabase: FirestoreDatabase, collectionName: String, documentId: String) {
+    // Daten löschen
+    firestoreDatabase.deleteCO2Data(collectionName, documentId) { deleteSuccess, deleteErrorMessage ->
+        if (deleteSuccess) {
+            println("CO2-Daten erfolgreich gelöscht")
+            // Weitere Aktionen bei erfolgreichem Löschen
+        } else {
+            println("Fehler beim Löschen der CO2-Daten: $deleteErrorMessage")
+        }
+    }
+}
+
+ */
