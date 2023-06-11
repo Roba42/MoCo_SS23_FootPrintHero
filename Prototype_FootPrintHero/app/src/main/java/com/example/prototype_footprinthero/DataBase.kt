@@ -6,11 +6,24 @@ class FirestoreDatabase {
 
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
-    fun writeCO2Data(co2Data: List<BarData>, collectionName: String, documentId: String, callback: (Boolean) -> Unit) {
-        val co2DataMap = co2Data.associateBy({ it.dayOfWeek }, { it.value })
+    fun writeCO2Data(
+        co2Data: List<BarData>,
+        collectionName: String,
+        documentId: String,
+        callback: (Boolean) -> Unit
+    ) {
+        val data = co2Data.map { it.copy() } // Kopie der Liste erstellen, um unerwartete Änderungen zu vermeiden
+
+        val firestoreData = data.map { barData ->
+            mapOf(
+                "dayOfWeek" to barData.dayOfWeek,
+                "value" to barData.value
+            )
+        }
+
         db.collection(collectionName)
             .document(documentId)
-            .set(co2DataMap)
+            .set(mapOf("co2Data" to firestoreData))
             .addOnSuccessListener {
                 callback(true) // Erfolgreich geschrieben
             }
@@ -19,13 +32,22 @@ class FirestoreDatabase {
             }
     }
 
-    fun readCO2Data(collectionName: String, documentId: String, callback: (List<BarData>?) -> Unit) {
+    fun readCO2Data(
+        collectionName: String,
+        documentId: String,
+        callback: (List<BarData>?) -> Unit
+    ) {
         db.collection(collectionName)
             .document(documentId)
             .get()
             .addOnSuccessListener { documentSnapshot ->
-                val co2DataMap = documentSnapshot.data
-                val co2DataList = co2DataMap?.entries?.map { BarData(it.key, it.value as Float) }
+                val firestoreData = documentSnapshot.get("co2Data") as? List<Map<String, Any>>
+                val co2DataList = firestoreData?.map { data ->
+                    BarData(
+                        dayOfWeek = data["dayOfWeek"] as? String ?: "",
+                        value = (data["value"] as? Double)?.toFloat() ?: 0f
+                    )
+                }
                 callback(co2DataList)
             }
             .addOnFailureListener { e ->
@@ -33,11 +55,24 @@ class FirestoreDatabase {
             }
     }
 
-    fun updateCO2Data(co2Data: List<BarData>, collectionName: String, documentId: String, callback: (Boolean) -> Unit) {
-        val co2DataMap = co2Data.associateBy({ it.dayOfWeek }, { it.value })
+    fun updateCO2Data(
+        co2Data: List<BarData>,
+        collectionName: String,
+        documentId: String,
+        callback: (Boolean) -> Unit
+    ) {
+        val data = co2Data.map { it.copy() } // Kopie der Liste erstellen, um unerwartete Änderungen zu vermeiden
+
+        val firestoreData = data.map { barData ->
+            mapOf(
+                "dayOfWeek" to barData.dayOfWeek,
+                "value" to barData.value
+            )
+        }
+
         db.collection(collectionName)
             .document(documentId)
-            .update(co2DataMap)
+            .update(mapOf("co2Data" to firestoreData))
             .addOnSuccessListener {
                 callback(true) // Erfolgreich aktualisiert
             }
@@ -46,7 +81,11 @@ class FirestoreDatabase {
             }
     }
 
-    fun deleteCO2Data(collectionName: String, documentId: String, callback: (Boolean) -> Unit) {
+    fun deleteCO2Data(
+        collectionName: String,
+        documentId: String,
+        callback: (Boolean) -> Unit
+    ) {
         db.collection(collectionName)
             .document(documentId)
             .delete()

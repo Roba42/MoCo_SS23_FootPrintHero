@@ -128,7 +128,8 @@ fun MainScreen(viewModel: MainViewModel) {
 fun TransportationList(
     vehicles: List<String>,
     selectedVehicle: String,
-    onVehicleSelected: (String) -> Unit) {
+    onVehicleSelected: (String) -> Unit
+) {
     val vehicles = listOf("Auto", "Fahrrad", "Flugzeug")
     var selectedVehicle by remember { mutableStateOf("Auto") }
 
@@ -169,7 +170,8 @@ fun TransportationList(
 @Composable
 fun TransportationDuration(
     duration: Int,
-    onDurationChanged: (Int) -> Unit) {
+    onDurationChanged: (Int) -> Unit
+) {
     var duration by remember { mutableStateOf(0) }
 
     Column(Modifier.padding(16.dp)) {
@@ -190,7 +192,9 @@ fun TransportationDuration(
             Text(
                 text = duration.toString(),
                 style = MaterialTheme.typography.body1.merge(),
-                modifier = Modifier.align(Alignment.BottomEnd).padding(end = 8.dp)
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(end = 8.dp)
             )
         }
     }
@@ -199,7 +203,8 @@ fun TransportationDuration(
 @Composable
 fun CO2Calculation(
     co2: Float,
-    onCalculateCO2: () -> Unit) {
+    onCalculateCO2: () -> Unit
+) {
     var co2 by remember { mutableStateOf(0f) }
     val transportationCO2 = mapOf("Auto" to 0.3f, "Fahrrad" to 0.0f, "Flugzeug" to 2.0f)
     val selectedTransportation by remember { mutableStateOf("Auto") }
@@ -312,7 +317,7 @@ fun WeekdayOverview() {
                         .padding(4.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = data.label)
+                    Text(text = data.dayOfWeek)
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -338,7 +343,8 @@ fun WeekdayOverview() {
     }
 }
 
-data class BarData(val label: String, val value: Float)
+data class BarData(val dayOfWeek: String, val value: Float)
+
 
 
 //ToDo - Navigations bar - aufteilen in 3"Screens"
