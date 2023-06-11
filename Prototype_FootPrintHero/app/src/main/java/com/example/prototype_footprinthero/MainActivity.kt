@@ -369,15 +369,16 @@ fun WeekdayOverview() {
     LaunchedEffect(Unit) {
         firestoreDatabase.writeCO2Data(co2Data, collectionName, documentId) { success, errorMessage ->
             if (success) {
-                println("CO2-Daten erfolgreich geschrieben")
-                // Weitere Aktionen bei erfolgreichem Schreibvorgang
+                println("CO2-Daten erfolgreich geschrieben: ${co2Data.joinToString()}")
             } else {
                 println("Fehler beim Schreiben der CO2-Daten: $errorMessage")
-                // Aktionen bei Fehler beim Schreibvorgang
             }
         }
     }
 }
+
+
+data class BarData(val dayOfWeek: String, val value: Float)
  */
 
 
